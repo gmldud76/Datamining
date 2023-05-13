@@ -2,22 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gmldud76.github.io/Datamining/about.html</loc>
-    <lastmod>2023-05-13T11:20:25.815Z</lastmod>
+    <lastmod>2023-05-13T11:30:37.960Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/index.html</loc>
-    <lastmod>2023-05-13T11:20:26.663Z</lastmod>
+    <lastmod>2023-05-13T11:30:38.537Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/numpy.html</loc>
-    <lastmod>2023-05-13T11:20:28.237Z</lastmod>
+    <lastmod>2023-05-13T11:30:40.008Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gmldud76.github.io/Datamining/posts/Pandas.html</loc>
+    <lastmod>2023-05-13T11:30:45.584Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/post-with-code/index.html</loc>
-    <lastmod>2023-05-13T11:20:28.930Z</lastmod>
+    <lastmod>2023-05-13T11:30:45.892Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/welcome/index.html</loc>
-    <lastmod>2023-05-13T11:20:29.252Z</lastmod>
+    <lastmod>2023-05-13T11:30:46.289Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gmldud76.github.io/Datamining/week_1b_pandas.html</loc>
+    <lastmod>2023-05-13T11:30:47.644Z</lastmod>
   </url>
 </urlset>
