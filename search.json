@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Myblog",
     "section": "",
-    "text": "Numpy Code!\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\npandas Code! (1)\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nPost With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMay 13, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 10, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Numpy Code!\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\npandas Code! (1)\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nFor loop 속도 개선하기\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nPost With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMay 13, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 10, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/numpy.html",
@@ -565,6 +565,69 @@
     "title": "Post With Code",
     "section": "",
     "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html",
+    "href": "posts/week_1c_increase_loop_speed.html",
+    "title": "For loop 속도 개선하기",
+    "section": "",
+    "text": "강의자료 출처 - https://blog.fearcat.in/a?ID=00900-6997c6fb-2680-4531-af1d-73eeccce74ef - https://aldente0630.github.io/data-science/2018/08/05/a-beginners-guide-to-optimizing-pandas-code-for-speed.html\nimport pandas as pd\nimport numpy as np\nfrom math import *"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#haversine-definition",
+    "href": "posts/week_1c_increase_loop_speed.html#haversine-definition",
+    "title": "For loop 속도 개선하기",
+    "section": "Haversine definition",
+    "text": "Haversine definition\n두 위치 사이의 거리를 계산하는 함수 - https://stricky.tistory.com/284\n\ndef haversine(lat1, lon1, lat2, lon2):\n    miles_constant = 3959 #단위가 miles\n    lat1, lon1, lat2, lon2 = map(np.deg2rad, [lat1, lon1, lat2, lon2])\n    dlat = lat2 - lat1 \n    dlon = lon2 - lon1 \n    a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2\n    c = 2 * np.arcsin(np.sqrt(a)) \n    mi = miles_constant * c\n    return mi"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#task",
+    "href": "posts/week_1c_increase_loop_speed.html#task",
+    "title": "For loop 속도 개선하기",
+    "section": "Task",
+    "text": "Task\n어떤 위치, (40.671, -73.985)에서 df에 존재하는 모든 호텔까지의 거리를 구해봅시다"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#looping-haversine",
+    "href": "posts/week_1c_increase_loop_speed.html#looping-haversine",
+    "title": "For loop 속도 개선하기",
+    "section": "Looping Haversine",
+    "text": "Looping Haversine\n\ndef haversine_looping(df):\n    distance_list = [] # 빈 리스트를 생성\n    for i in range(0, len(df)):\n        d = haversine(40.671, -73.985, df.iloc[i]['latitude'], df.iloc[i]['longitude'])\n        distance_list.append(d)\n    return distance_list\n\n%%timeit은 Jupyter Notebook에서 사용되는 매직 명령어 중 하나로, 코드 실행 시간을 측정하는 도구입니다.\n%%timeit 매직 명령어를 사용하면 해당 셀의 코드를 여러 번 실행하여 실행 시간을 평균적으로 계산합니다. 이를 통해 코드의 실행 성능을 쉽게 측정하고 비교할 수 있습니다.\n\n%%timeit\n\n# Haversine 반복 함수 실행하기\ndf['distance'] = haversine_looping(df)\n\n198 ms ± 466 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)\n\n\n\ndf['distance'].describe()\n\ncount    1631.000000\nmean      111.318922\nstd       107.476086\nmin         0.163480\n25%         6.305530\n50%        71.070425\n75%       199.395866\nmax       314.936306\nName: distance, dtype: float64"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#iterrows-haversine",
+    "href": "posts/week_1c_increase_loop_speed.html#iterrows-haversine",
+    "title": "For loop 속도 개선하기",
+    "section": "Iterrows Haversine",
+    "text": "Iterrows Haversine\n반복문을 돌려야 할 때 iterrows() 메서드를 사용하는 건 행을 반복하기 위한 더 좋은 방법이다. iterrows()는 데이터 프레임의 행을 반복하며 행 자체를 포함하는 객체에 덧붙여 각 행의 색인을 반환하는 제너레이터다. iterrows()는 판다스 데이터 프레임과 함께 작동하게끔 최적화되어 있으며 표준 함수 대부분을 실행하는 데 가장 효율적인 방법은 아니지만(나중에 자세히 설명) 단순 반복보다는 상당히 개선되었다. 예제의 경우 iterrows()는 행을 수동으로 반복하는 것보다 거의 똑같은 문제를 약 4배 빠르게 해결한다.\n\n# Haversine applied on rows via iteration\nhaversine_series = []\nfor index, row in df.iloc[0:10].iterrows():\n    print(row['latitude'])\n\n42.68751\n42.68971\n42.7241\n42.65157\n42.68873\n42.72874\n42.68031\n42.65334\n42.72111\n42.67807\n\n\n\n%%timeit\n# Haversine applied on rows via iteration\nhaversine_series = []\nfor index, row in df.iterrows():\n    haversine_series.append(haversine(40.671, -73.985, row['latitude'], row['longitude'])) #function\ndf['distance'] = haversine_series\n\n80.6 ms ± 314 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)\n\n\nitertuples와 iterrows는 모두 Pandas 데이터프레임의 행을 순회(iterate)하는 메서드입니다. 그러나 itertuples는 iterrows보다 더욱 빠른 속도를 보이므로, 대체로 itertuples를 사용하는 것이 좋습니다.\n이유는 iterrows는 각 행(row)을 Series 객체로 반환하는 반면, itertuples는 각 행을 NamedTuple로 반환합니다. NamedTuple은 각 속성(attribute)에 이름이 지정되어 있기 때문에, Series보다 빠르게 데이터에 접근할 수 있습니다. 따라서 대용량의 데이터프레임을 다룰 때는 itertuples를 사용하는 것이 더욱 효율적입니다.\n\n%%timeit\nhaversine_series = []\nfor idx, lat, lon in df[['latitude','longitude']].itertuples(): # 필요한 컬럼만 뽑아서 itertuples을 진행 \n    haversine_series.append(haversine(40.671, -73.985, lat, lon))\n    \ndf['distance'] = haversine_series\n\n17 ms ± 63 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)\n\n\n\nimport pandas as pd\n\ndf2 = pd.DataFrame({'A': [1, 2, 3], 'B': ['a', 'b', 'c']})\n\nfor row in df2.itertuples():\n    print(row)\n\nPandas(Index=0, A=1, B='a')\nPandas(Index=1, A=2, B='b')\nPandas(Index=2, A=3, B='c')\n\n\n\nimport pandas as pd\n\ndf2 = pd.DataFrame({'A': [1, 2, 3], 'B': ['a', 'b', 'c']})\n\nfor index, a, b in df2.itertuples():\n    print(row)\n\nPandas(Index=2, A=3, B='c')\nPandas(Index=2, A=3, B='c')\nPandas(Index=2, A=3, B='c')"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#apply-haversine-on-rows",
+    "href": "posts/week_1c_increase_loop_speed.html#apply-haversine-on-rows",
+    "title": "For loop 속도 개선하기",
+    "section": "Apply Haversine on rows",
+    "text": "Apply Haversine on rows\niterrows()보다 더 좋은 옵션은 데이터 프레임의 특정 축(행 또는 열을 의미)을 따라 함수를 적용하는 apply() 메서드를 사용하는 것이다. apply()는 본질적으로 행을 반복하지만 Cython에서 이터레이터를 사용하는 것 같이 내부 최적화를 다양하게 활용하므로 iterrows()보다 훨씬 효율적이다.\n익명의 람다 함수를 사용하여 Haversine 함수를 각 행에 적용하며 각 행의 특정 셀을 함수 입력값으로 지정할 수 있다. 람다 함수는 판다스가 행(축 = 1)과 열(축 = 0) 중 어디에 함수를 적용할지 정할 수 있게 축 매개 변수를 마지막에 포함한다.\n\nTiming “apply”\n\n%%timeit \n\ndf['distance'] =\\\ndf.apply(lambda row: haversine(40.671, -73.985,\\\n                               row['latitude'], row['longitude']), axis=1)\n\n26.4 ms ± 101 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#vectorized-implementation-of-haversine-applied-on-pandas-series",
+    "href": "posts/week_1c_increase_loop_speed.html#vectorized-implementation-of-haversine-applied-on-pandas-series",
+    "title": "For loop 속도 개선하기",
+    "section": "Vectorized implementation of Haversine applied on Pandas series",
+    "text": "Vectorized implementation of Haversine applied on Pandas series\n\nTiming vectorized implementation\n함수 수행의 반복량 줄이는 방법을 이해하기 위해 판다스의 기본 단위, 데이터 프레임과 시리즈가 모두 배열 기반임을 알아두자. 기본 단위의 내부 구조는 개별 값(스칼라라고 함)마다 순차적으로 작동하는 대신 전체 배열 위로 작동하도록 설계된 내장 판다스 함수를 위해 변환된다. 벡터화는 전체 배열 위로 작업을 실행하는 프로세스다.\n판다스는 수학 연산에서 집계 및 문자열 함수(사용 가능한 함수의 광범위한 목록은 판다스 문서에서 확인해라)에 이르기까지 다양한 벡터화 함수를 포함하고 있다. 내장 함수는 판다스 시리즈와 데이터 프레임에서 작동하게끔 최적화되어있다. 결과적으로 벡터화 판다스 함수를 사용하는 건 비슷한 목적을 위해 손수 반복시키는 방법보다 거의 항상 바람직하다.\n지금까지는 Haversine 함수에 스칼라를 전달했다. 그러나 “Haversine 함수 내에서 사용하는 모든 함수를 배열 위로 작동시킬 수 있다. 이렇게 하면 거리 함수를 매우 간단하게 벡터화할 수 있다.” 스칼라 값으로 각 위도, 경도를 전달하는 대신 전체 시리즈(열)를 전달한다. 이를 통해 판다스는 벡터화 함수에 적용 가능한 모든 최적화 옵션을 활용할 수 있고 특히 전체 배열에 대한 모든 계산을 동시에 수행하게 된다.\n\n%%timeit\n# Vectorized implementation of Haversine applied on Pandas series\ndf['distance'] = haversine(40.671, -73.985,\\\n                                   df['latitude'], df['longitude']) #벡터\n\n975 µs ± 1.38 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)\n\n\n함수 벡터화를 통해 apply() 메서드 대비 50배 이상 개선시켰고 iterrows() 대비 100배 이상 개선시켰다. 입력 유형 변경하는 것 외에 아무것도 하지 않아도 됐다!"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#vectorized-implementation-of-haversine-applied-on-numpy-arrays",
+    "href": "posts/week_1c_increase_loop_speed.html#vectorized-implementation-of-haversine-applied-on-numpy-arrays",
+    "title": "For loop 속도 개선하기",
+    "section": "Vectorized implementation of Haversine applied on NumPy arrays",
+    "text": "Vectorized implementation of Haversine applied on NumPy arrays\n이 지점에서 그만두어도 괜찮다. 판다스 시리즈를 사용해 벡터화하면 상시 계산을 위한 최적화 요구 사항의 거의 대부분을 만족시킬 수 있다. 그러나 속도가 최우선이라면 넘파이 파이썬 라이브러리 형식에 도움을 요청해볼 수 있다.\n넘파이 라이브러리는 “과학 계산을 위한 파이썬 기본 패키지”를 표방하며 내부가 최적화된, 사전 컴파일된 C 코드로 작업을 수행한다. 판다스와 마찬가지로 넘파이는 배열 객체(ndarrays라고 함) 상에서 작동한다. 그러나 색인, 데이터 유형 확인 등과 같이 판다스 시리즈 작업으로 인한 오버헤드가 많이 발생하지 않는다. 결과적으로 넘파이 배열에 대한 작업은 판다스 시리즈에 대한 작업보다 훨씬 빠르다.\n판다스 시리즈가 제공하는 추가 기능이 중요하지 않을 때 넘파이 배열을 판다스 시리즈 대신 사용할 수 있다. 예를 들어 Haversine 함수의 벡터화 구현은 실제로 위도 또는 경도 시리즈의 색인을 사용하지 않으므로 사용할 수 있는 색인이 없어도 함수가 중단되지 않는다. 이에 비해 색인으로 값을 참조해야 하는 데이터 프레임의 조인 같은 작업을 수행한다면 판다스 개체를 계속 사용하는 편이 낫다.\n위도와 경도 배열을 시리즈의 values 메서드를 단순 사용해서 판다스 시리즈에서 넘파이 배열로 변환한다. 시리즈의 벡터화와 마찬가지로 넘파이 배열을 함수에 직접 전달하면 판다스가 전체 벡터에 함수를 적용시킨다.\n\nTiming vectorized implementation\n\n# Vectorized implementation of Haversine applied on NumPy arrays\n%timeit df['distance'] = haversine(40.671, -73.985,\\\n                         df['latitude'].values, df['longitude'].values) #.values 빼고 실행이되지만 속도차이 있음\n\n114 µs ± 61 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)\n\n\n\n%%timeit\n# Convert pandas arrays to NumPy ndarrays\nnp_lat = df['latitude'].values\nnp_lon = df['longitude'].values\n\n5.24 µs ± 17.7 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)"
+  },
+  {
+    "objectID": "posts/week_1c_increase_loop_speed.html#summary",
+    "href": "posts/week_1c_increase_loop_speed.html#summary",
+    "title": "For loop 속도 개선하기",
+    "section": "Summary",
+    "text": "Summary\n판다스 코드 최적화에 관해 몇 가지 기본적인 결론을 내릴 수 있다.\n1 . 반복을 피해라. 사용 사례 대부분의 경우 반복은 느리고 불필요하다.\n2 . 반복해야 하는 경우 반복 함수가 아닌 apply()를 사용해라.\n3 . 보통은 벡터화가 스칼라 연산보다 낫다. 대부분의 판다스 작업은 벡터화시킬 수 있다.\n4 . 넘파이 배열에서의 벡터 연산은 판다스 시리즈에서 수행하는 것보다 효율적이다.\n\n실습\n아래의 조건을 만족하는 호텔의 List를 출력해 봅시다.\n\n현재 나는 (“latitude”, “longitude”) = (40.671, -73.985) 위치에 있고, 숙박할 호텔을 찾고 있습니다.\n직선거리 기준으로 200마일 안쪽에 있었으면 좋겠습니다.\nstar_rating이 4 이상인 호텔을 찾고 있습니다.\n\n해당 조건을 만족하는 호텔들을 출력해봅시다\n\ndf\n\n\n\n\n\n\n\n\nean_hotel_id\nname\naddress1\ncity\nstate_province\npostal_code\nlatitude\nlongitude\nstar_rating\nhigh_rate\nlow_rate\ndistance\n\n\n\n\n0\n269955\nHilton Garden Inn Albany/SUNY Area\n1389 Washington Ave\nAlbany\nNY\n12206\n42.68751\n-73.81643\n3.0\n154.0272\n124.0216\n139.607190\n\n\n1\n113431\nCourtyard by Marriott Albany Thruway\n1455 Washington Avenue\nAlbany\nNY\n12206\n42.68971\n-73.82021\n3.0\n179.0100\n134.0000\n139.746898\n\n\n2\n108151\nRadisson Hotel Albany\n205 Wolf Rd\nAlbany\nNY\n12205\n42.72410\n-73.79822\n3.0\n134.1700\n84.1600\n142.191050\n\n\n3\n254756\nHilton Garden Inn Albany Medical Center\n62 New Scotland Ave\nAlbany\nNY\n12208\n42.65157\n-73.77638\n3.0\n308.2807\n228.4597\n137.275546\n\n\n4\n198232\nCrestHill Suites SUNY University Albany\n1415 Washington Avenue\nAlbany\nNY\n12206\n42.68873\n-73.81854\n3.0\n169.3900\n89.3900\n139.684583\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n1626\n324259\nResidence Inn Yonkers Westchester County\n7 Executive Blvd\nYonkers\nNY\n10701\n40.97275\n-73.88075\n3.0\n269.3600\n169.3600\n21.551000\n\n\n1627\n107949\nRamada Inn Yonkers\n125 Tuckahoe Rd\nYonkers\nNY\n10710\n40.95466\n-73.86483\n2.5\n129.0000\n119.0000\n20.583072\n\n\n1628\n509723\nHyatt Place New York/Yonkers\n7000 Mall Walk\nYonkers\nNY\n10704\n40.92625\n-73.85438\n3.0\n249.3100\n199.3100\n18.914309\n\n\n1629\n621870\nHampton Inn & Suites Yonkers - Westchester\n555 Tuckahoe Rd\nYonkers\nNY\n10710\n40.95375\n-73.84935\n2.5\n189.1900\n134.1800\n20.785405\n\n\n1630\n683329\nCourtyard by Marriott Yonkers Westchester County\n5 Executive Boulevard\nYonkers\nNY\n10701\n40.97308\n-73.87955\n3.0\n0.0000\n0.0000\n21.588998\n\n\n\n\n1631 rows × 12 columns\n\n\n\n\ndf_1 = df[df[\"distance\"]&gt; 200]\ndf_1 = df[df[\"star_rating\"]&gt;=4]\n\n\ndf_1\n\n\n\n\n\n\n\n\nean_hotel_id\nname\naddress1\ncity\nstate_province\npostal_code\nlatitude\nlongitude\nstar_rating\nhigh_rate\nlow_rate\ndistance\n\n\n\n\n114\n482259\nTopping Rose House\nOne Bridgehampton - Sag Harbor Turnpike\nBridgehampton\nNY\n11932\n40.93780\n-72.30069\n4.5\n995.3900\n295.3900\n90.001264\n\n\n129\n339951\nSheraton Brooklyn New York Hotel\n228 Duffield Street\nBrooklyn\nNY\n11201\n40.69160\n-73.98436\n4.0\n409.1485\n259.0916\n1.423805\n\n\n134\n406834\nMcCarren Hotel & Pool\n160 N 12th St\nBrooklyn\nNY\n11249\n40.72100\n-73.95543\n4.0\n575.4100\n330.4100\n3.786288\n\n\n142\n403899\nThe Box House Hotel\n77 Box Street\nBrooklyn\nNY\n11222\n40.73749\n-73.95329\n4.0\n379.4200\n249.4200\n4.885345\n\n\n154\n136344\nNew York Marriott at the Brooklyn Bridge\n333 Adams St\nBrooklyn\nNY\n11201\n40.69365\n-73.98870\n4.0\n489.0700\n212.0400\n1.577023\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n1592\n333528\nViana Hotel & Spa, BW Premier Collection\n3998 Brush Hollow Rd\nWestbury\nNY\n11590\n40.77629\n-73.55967\n4.0\n509.9900\n133.9500\n23.431169\n\n\n1600\n324657\nThe Ritz-Carlton New York, Westchester\n3 Renaissance Square\nWhite Plains\nNY\n10601\n41.03257\n-73.76664\n5.0\n479.4042\n349.2972\n27.466891\n\n\n1601\n514006\nFurnished Quarters Bank Street Commons\n15/25 Bank Street\nWhite Plains\nNY\n10606\n41.03050\n-73.77419\n4.0\n180.0000\n179.0000\n27.174550\n\n\n1602\n566642\nGlobal Luxury Apartments in White Plains\n15 Bank Street\nWhite Plains\nNY\n10606\n41.03150\n-73.77401\n4.0\n175.2200\n125.1500\n27.241501\n\n\n1603\n629966\nGlobal Luxury Suites at White Plains\n27 Barker Avenue\nWhite Plains\nNY\n10601\n41.03565\n-73.76925\n4.0\n190.0300\n189.0300\n27.604500\n\n\n\n\n258 rows × 12 columns"
   },
   {
     "objectID": "posts/welcome/index.html",
