@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Myblog",
     "section": "",
-    "text": "kaggle_geopandas(1) - Your First Map\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nkaggle geopandas(2) - Coordinate Reference Systems (좌표참조 시스템)\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNumpy Code!\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\npandas Code! (1)\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nseaborn_and_matplotlib\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nFor loop 속도 개선하기\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
+    "text": "kaggle_geopandas(1) - Your First Map\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nkaggle geopandas(2) - Coordinate Reference Systems (좌표참조 시스템)\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nkaggle geopandas(3) - Interactive Maps\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNumpy Code!\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\npandas Code! (1)\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nseaborn_and_matplotlib\n\n\n\n\n\n\n\ncoding\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nFor loop 속도 개선하기\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/kaggle_gopandas1.html",
@@ -103,6 +103,62 @@
     "title": "kaggle geopandas(2) - Coordinate Reference Systems (좌표참조 시스템)",
     "section": "Your turn",
     "text": "Your turn\n배운 내용을 활용하여 남미로의 조류 이동을 추적하세요."
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html",
+    "href": "posts/kaggle_gopandas3.html",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "",
+    "text": "인터랙티브 히트맵, 코로페스 지도 등을 만드는 방법을 알아보세요!"
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#introduction",
+    "href": "posts/kaggle_gopandas3.html#introduction",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "Introduction",
+    "text": "Introduction\n이 튜토리얼에서는 folium 패키지로 interactive maps을 만드는 방법을 배웁니다. 그 과정에서 새로운 기술을 적용하여 보스턴 범죄 데이터를 시각화하게 됩니다.\n\nimport pandas as pd\nimport geopandas as gpd\nimport math\n\nC:\\Users\\heeyoung\\.conda\\envs\\quarto\\lib\\site-packages\\geopandas\\_compat.py:123: UserWarning: The Shapely GEOS version (3.10.1-CAPI-1.16.0) is incompatible with the GEOS version PyGEOS was compiled with (3.10.4-CAPI-1.16.2). Conversions between both will be slow.\n  warnings.warn(\n\n\n\nimport folium\nfrom folium import Choropleth, Circle, Marker\nfrom folium.plugins import HeatMap, MarkerCluster"
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#your-first-interactive-map",
+    "href": "posts/kaggle_gopandas3.html#your-first-interactive-map",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "Your first interactive map",
+    "text": "Your first interactive map\n먼저 folium.Map()을 사용하여 비교적 간단한 지도를 만듭니다.\n\n# Create a map\nm_1 = folium.Map(location=[42.32,-71.0589], tiles='openstreetmap', zoom_start=10)\n\n# Display the map\nm_1\n\nMake this Notebook Trusted to load map: File -&gt; Trust Notebook\n\n\n여러 인수를 사용하여 지도의 모양을 사용자 지정할 수 있습니다:\n\n위치는 맵의 초기 중심을 설정합니다. 여기서는 보스턴시의 위도(42.32° N)와 경도(-71.0589° E)를 사용합니다.\n타일은 지도의 스타일을 변경하며, 이 경우 OpenStreetMap 스타일을 선택합니다. 다른 옵션이 궁금하다면 여기에 나열된 다른 옵션을 찾아볼 수 있습니다.\nzoom_start는 지도의 초기 확대/축소 수준을 설정하며, 값이 클수록 지도가 더 가까이 확대됩니다.\n\n지금 바로 확대/축소하거나 지도를 다른 방향으로 드래그하여 탐색해 보세요.\n\n### create a map object with OpenStreeMap tiles\nm = folium.Map()"
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#the-data",
+    "href": "posts/kaggle_gopandas3.html#the-data",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "The data",
+    "text": "The data\n이제 맵에 범죄 데이터를 추가하겠습니다!\n여기서는 데이터 로드 단계에 집중하지 않겠습니다. 대신, 이미 Pandas Dataframe에 범죄 데이터가 있는 지점에 있다고 상상해 보겠습니다. 데이터의 처음 다섯 행은 아래와 같습니다.\n\n# Load the data\ncrimes = pd.read_csv(\"geopandas_data/crimes-in-boston/crimes-in-boston/crime.csv\", encoding='latin-1')\n\n# Drop rows with missing locations\ncrimes.dropna(subset=['Lat', 'Long', 'DISTRICT'], inplace=True)\n\n# Focus on major crimes in 2018\ncrimes = crimes[crimes.OFFENSE_CODE_GROUP.isin([\n    'Larceny', 'Auto Theft', 'Robbery', 'Larceny From Motor Vehicle', 'Residential Burglary',\n    'Simple Assault', 'Harassment', 'Ballistics', 'Aggravated Assault', 'Other Burglary', \n    'Arson', 'Commercial Burglary', 'HOME INVASION', 'Homicide', 'Criminal Harassment', \n    'Manslaughter'])]\ncrimes = crimes[crimes.YEAR&gt;=2018]\n\n# Print the first five rows of the table\ncrimes.head()\n\n\n\n\n\n\n\n\nINCIDENT_NUMBER\nOFFENSE_CODE\nOFFENSE_CODE_GROUP\nOFFENSE_DESCRIPTION\nDISTRICT\nREPORTING_AREA\nSHOOTING\nOCCURRED_ON_DATE\nYEAR\nMONTH\nDAY_OF_WEEK\nHOUR\nUCR_PART\nSTREET\nLat\nLong\nLocation\n\n\n\n\n0\nI182070945\n619\nLarceny\nLARCENY ALL OTHERS\nD14\n808\nNaN\n2018-09-02 13:00:00\n2018\n9\nSunday\n13\nPart One\nLINCOLN ST\n42.357791\n-71.139371\n(42.35779134, -71.13937053)\n\n\n6\nI182070933\n724\nAuto Theft\nAUTO THEFT\nB2\n330\nNaN\n2018-09-03 21:25:00\n2018\n9\nMonday\n21\nPart One\nNORMANDY ST\n42.306072\n-71.082733\n(42.30607218, -71.08273260)\n\n\n8\nI182070931\n301\nRobbery\nROBBERY - STREET\nC6\n177\nNaN\n2018-09-03 20:48:00\n2018\n9\nMonday\n20\nPart One\nMASSACHUSETTS AVE\n42.331521\n-71.070853\n(42.33152148, -71.07085307)\n\n\n19\nI182070915\n614\nLarceny From Motor Vehicle\nLARCENY THEFT FROM MV - NON-ACCESSORY\nB2\n181\nNaN\n2018-09-02 18:00:00\n2018\n9\nSunday\n18\nPart One\nSHIRLEY ST\n42.325695\n-71.068168\n(42.32569490, -71.06816778)\n\n\n24\nI182070908\n522\nResidential Burglary\nBURGLARY - RESIDENTIAL - NO FORCE\nB2\n911\nNaN\n2018-09-03 18:38:00\n2018\n9\nMonday\n18\nPart One\nANNUNCIATION RD\n42.335062\n-71.093168\n(42.33506218, -71.09316781)"
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#plotting-points",
+    "href": "posts/kaggle_gopandas3.html#plotting-points",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "Plotting points",
+    "text": "Plotting points\n지도에 넣어야 하는 데이터의 양을 줄이기 위해 (일시적으로) 주간 강도 사건에 집중할 것입니다.\n\ndaytime_robberies = crimes[((crimes.OFFENSE_CODE_GROUP == 'Robbery') & \\\n                            (crimes.HOUR.isin(range(9,18))))]\n\n\nfolium.Marker\nfolium.Marker()로 지도에 마커를 추가합니다. 아래의 각 마커는 서로 다른 강도에 해당합니다.\n\n# Create a map\nm_2 = folium.Map(location=[42.32,-71.0589], tiles='cartodbpositron', zoom_start=13)\n\n# Add points to the map\nfor idx, row in daytime_robberies.iterrows():\n    Marker([row['Lat'], row['Long']]).add_to(m_2)\n\n# Display the map\nm_2\n\nMake this Notebook Trusted to load map: File -&gt; Trust Notebook\n\n\n\n\nfolium.plugins.MarkerCluster\n추가할 마커가 많은 경우 folium.plugins.MarkerCluster()를 사용하면 지도를 깔끔하게 정리하는 데 도움이 될 수 있습니다. 각 마커는 MarkerCluster 객체에 추가됩니다.\n\n# Create the map\nm_3 = folium.Map(location=[42.32,-71.0589], tiles='cartodbpositron', zoom_start=13)\n\n# Add points to the map\nmc = MarkerCluster()\nfor idx, row in daytime_robberies.iterrows():\n    if not math.isnan(row['Long']) and not math.isnan(row['Lat']):\n        mc.add_child(Marker([row['Lat'], row['Long']]))\nm_3.add_child(mc)\n\n# Display the map\nm_3\n\nMake this Notebook Trusted to load map: File -&gt; Trust Notebook\n\n\n\n\nBubble maps\n버블 맵은 마커 대신 원을 사용합니다. 각 원의 크기와 색상을 변경하여 위치와 다른 두 변수 사이의 관계를 표시할 수도 있습니다.\nfolium.Circle()을 사용하여 원을 반복적으로 추가하여 버블 맵을 만듭니다. 아래 코드 셀에서 9~12시간에 발생한 강도는 녹색으로 표시되고, 13~17시간에 발생한 강도는 빨간색으로 표시됩니다.\n\n# Create a base map\nm_4 = folium.Map(location=[42.32,-71.0589], tiles='cartodbpositron', zoom_start=13)\n\ndef color_producer(val):\n    if val &lt;= 12:\n        return 'forestgreen'\n    else:\n        return 'darkred'\n\n# Add a bubble map to the base map\nfor i in range(0,len(daytime_robberies)):\n    Circle(\n        location=[daytime_robberies.iloc[i]['Lat'], daytime_robberies.iloc[i]['Long']],\n        radius=20,\n        color=color_producer(daytime_robberies.iloc[i]['HOUR'])).add_to(m_4)\n\n# Display the map\nm_4\n\nMake this Notebook Trusted to load map: File -&gt; Trust Notebook\n\n\nfolium.Circle()은 여러 인수를 받습니다:\n\n위치는 원의 중심을 위도와 경도로 표시한 목록입니다.\nradius는 원의 반지름을 설정합니다.\n\n기존 버블 맵에서는 각 원의 반지름이 달라질 수 있습니다. 각 원의 색상을 변경하는 데 사용되는 color_producer() 함수와 유사한 함수를 정의하여 이를 구현할 수 있습니다.\n\ncolor는 각 원의 색상을 설정합니다.\n\ncolor_producer() 함수는 강도의 위치에 대한 시간의 효과를 시각화하는 데 사용됩니다."
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#heatmaps",
+    "href": "posts/kaggle_gopandas3.html#heatmaps",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "Heatmaps",
+    "text": "Heatmaps\n히트맵을 생성하기 위해 folium.plugins.HeatMap()을 사용합니다. 이것은 도시 내 여러 지역의 범죄 밀도를 보여주며, 빨간색 영역은 상대적으로 범죄 발생이 더 많습니다.\n대도시에서 예상할 수 있듯이 대부분의 범죄는 도심 근처에서 발생합니다.\n\n# Create a base map\nm_5 = folium.Map(location=[42.32,-71.0589], tiles='cartodbpositron', zoom_start=12)\n\n# Add a heatmap to the base map\nHeatMap(data=crimes[['Lat', 'Long']], radius=10).add_to(m_5)\n\n# Display the map\nm_5\n\nMake this Notebook Trusted to load map: File -&gt; Trust Notebook\n\n\n위의 코드 셀에서 볼 수 있듯이 folium.plugins.HeatMap()은 몇 가지 인수를 받습니다:\n\ndata는 플롯하고자 하는 위치가 포함된 데이터프레임입니다.\n반경은 히트맵의 부드러움을 제어합니다. 값이 클수록 히트맵이 더 부드러워집니다(즉, 간격이 줄어듭니다)."
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#choropleth-maps",
+    "href": "posts/kaggle_gopandas3.html#choropleth-maps",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "Choropleth maps",
+    "text": "Choropleth maps\n경찰 구역별로 범죄가 어떻게 다른지 이해하기 위해 코로플라스 맵을 만들어 보겠습니다.\n첫 번째 단계로, 각 구역에 서로 다른 행이 할당되고 ‘geometry’ 열에 지리적 경계가 포함된 지오데이터프레임(GeoDataFrame)을 만듭니다.\n\n# GeoDataFrame with geographical boundaries of Boston police districts\ndistricts_full = gpd.read_file('geopandas_data/Police_Districts/Police_Districts/Police_Districts.shp')\ndistricts = districts_full[[\"DISTRICT\", \"geometry\"]].set_index(\"DISTRICT\")\ndistricts.head()\n\n\n\n\n\n\n\n\ngeometry\n\n\nDISTRICT\n\n\n\n\n\nA15\nMULTIPOLYGON (((-71.07416 42.39051, -71.07415 ...\n\n\nA7\nMULTIPOLYGON (((-70.99644 42.39557, -70.99644 ...\n\n\nA1\nPOLYGON ((-71.05200 42.36884, -71.05169 42.368...\n\n\nC6\nPOLYGON ((-71.04406 42.35403, -71.04412 42.353...\n\n\nD4\nPOLYGON ((-71.07416 42.35724, -71.07359 42.357...\n\n\n\n\n\n\n\n또한 각 지역의 범죄 발생 건수를 보여주는 plot_dict라는 Pandas Series를 만듭니다.\n\n# Number of crimes in each police district\nplot_dict = crimes.DISTRICT.value_counts()\nplot_dict.head()\n\nDISTRICT\nD4     2885\nB2     2231\nA1     2130\nC11    1899\nB3     1421\nName: count, dtype: int64\n\n\n이것은 코드가 지리적 경계를 적절한 색상과 일치시키는 방법을 알기 때문에 plot_dict의 인덱스가 구역과 동일한 것이 매우 중요합니다.\nfolium.Choropleth() 클래스를 사용하여 코로플라스 지도를 만들 수 있습니다. 아래 지도가 렌더링되지 않는 경우 다른 웹 브라우저에서 페이지를 확인해 보세요.\n\n# Create a base map\nm_6 = folium.Map(location=[42.32,-71.0589], tiles='cartodbpositron', zoom_start=12)\n\n# Add a choropleth map to the base map\nChoropleth(geo_data=districts.__geo_interface__, \n           data=plot_dict, \n           key_on=\"feature.id\", \n           fill_color='YlGnBu', \n           legend_name='Major criminal incidents (Jan-Aug 2018)'\n          ).add_to(m_6)\n\n# Display the map\nm_6\n\nMake this Notebook Trusted to load map: File -&gt; Trust Notebook\n\n\n가장 안전한지역을 초록, 위험한 지역을 빨간색으로 바꿔봅시다.\nfolium.Choropleth()는 여러 인수를 받습니다:\n\ngeo_data는 각 지리적 영역의 경계를 포함하는 GeoJSON FeatureCollection입니다.\n\n위의 코드에서는 geo_interface 속성을 사용하여 지역 GeoDataFrame을 GeoJSON FeatureCollection으로 변환합니다.\n\n데이터는 각 지리적 영역에 색을 입히는 데 사용할 값이 포함된 Pandas 시리즈입니다.\nkey_on은 항상 feature.id로 설정됩니다.\n\n이는 geo_data에 사용되는 GeoDataFrame과 데이터에 제공된 판다 시리즈의 인덱스가 동일하다는 사실을 나타냅니다. 자세한 내용을 이해하려면 GeoJSON Feature Collection의 구조를 좀 더 자세히 살펴봐야 합니다(“features” 키에 해당하는 값은 목록이고 각 항목은 “id” 키를 포함하는 사전입니다).\n\nfill_color는 색상 배율을 설정합니다.\nlegend_name은 맵의 오른쪽 상단 모서리에 있는 범례에 레이블을 지정합니다."
+  },
+  {
+    "objectID": "posts/kaggle_gopandas3.html#your-turn",
+    "href": "posts/kaggle_gopandas3.html#your-turn",
+    "title": "kaggle geopandas(3) - Interactive Maps",
+    "section": "Your turn",
+    "text": "Your turn\n나만의 지도를 디자인하여 일본의 어느 지역에 추가 지진 보강이 필요한지 알아보세요."
   },
   {
     "objectID": "posts/numpy.html",
