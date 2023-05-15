@@ -2,30 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gmldud76.github.io/Datamining/about.html</loc>
-    <lastmod>2023-05-15T11:59:08.863Z</lastmod>
+    <lastmod>2023-05-15T12:03:54.923Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/index.html</loc>
-    <lastmod>2023-05-15T11:59:09.624Z</lastmod>
+    <lastmod>2023-05-15T12:03:55.550Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/kaggle_gopandas1.html</loc>
-    <lastmod>2023-05-15T11:59:10.922Z</lastmod>
+    <lastmod>2023-05-15T12:03:56.820Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gmldud76.github.io/Datamining/posts/kaggle_gopandas2.html</loc>
+    <lastmod>2023-05-15T12:03:57.956Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/numpy.html</loc>
-    <lastmod>2023-05-15T11:59:12.551Z</lastmod>
+    <lastmod>2023-05-15T12:03:59.401Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/Pandas.html</loc>
-    <lastmod>2023-05-15T11:59:18.421Z</lastmod>
+    <lastmod>2023-05-15T12:04:04.686Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/seaborn_and_matplotlib.html</loc>
-    <lastmod>2023-05-15T11:59:19.079Z</lastmod>
+    <lastmod>2023-05-15T12:04:05.352Z</lastmod>
   </url>
   <url>
     <loc>https://gmldud76.github.io/Datamining/posts/week_1c_increase_loop_speed.html</loc>
-    <lastmod>2023-05-15T11:59:20.413Z</lastmod>
+    <lastmod>2023-05-15T12:04:06.685Z</lastmod>
   </url>
 </urlset>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Myblog - kaggle geopandas(2) - Coordinate Reference Systems (좌표참조 시스템)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Myblog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">kaggle geopandas(2) - Coordinate Reference Systems (좌표참조 시스템)</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>지구 표면을 2차원으로 표현할 수 있다는 것은 정말 놀라운 일입니다!</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">introduction</h2>
+<p>이 강좌에서 만드는 지도는 지구 표면을 2차원으로 묘사합니다. 하지만 아시다시피 세계는 실제로 3차원의 지구입니다. 따라서 지도 투영이라는 방법을 사용하여 평평한 표면으로 렌더링해야 합니다.</p>
+<p>지도 투영은 100% 정확할 수 없습니다. 각 투영법은 지구 표면을 어떤 식으로든 왜곡하지만 유용한 속성은 유지합니다.</p>
+<p>예를 들어</p>
+<ul>
+<li>등면적 투영(“램버트 원통형 등면적” 또는 “아프리카 알버스 등면적 원뿔” 등)은 면적을 보존합니다. 예를 들어 국가나 도시의 면적을 계산하려는 경우 좋은 선택입니다.</li>
+<li>등거리 투영(“방위각 등거리 투영” 등)은 거리를 보존합니다. 비행 거리를 계산할 때 좋은 선택입니다.</li>
+</ul>
+<p>투영된 점이 지구상의 실제 위치와 어떻게 일치하는지 보여주기 위해 좌표 참조 시스템(CRS)을 사용합니다. 이 튜토리얼에서는 좌표 참조계에 대해 자세히 알아보고 geopandas에서 좌표 참조계를 사용하는 방법을 알아봅니다.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\heeyoung\.conda\envs\quarto\lib\site-packages\geopandas\_compat.py:123: UserWarning: The Shapely GEOS version (3.10.1-CAPI-1.16.0) is incompatible with the GEOS version PyGEOS was compiled with (3.10.4-CAPI-1.16.2). Conversions between both will be slow.
+  warnings.warn(</code></pre>
+</div>
+</div>
+</section>
+<section id="setting-the-crs" class="level2">
+<h2 class="anchored" data-anchor-id="setting-the-crs">Setting the CRS</h2>
+<p>셰이프 파일에서 GeoDataFrame을 만들 때 CRS는 이미 가져온 것입니다.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a GeoDataFrame containing regions in Ghana</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>regions <span class="op">=</span> gpd.read_file(<span class="st">"geopandas_data/ghana/ghana/Regions/Map_of_Regions_in_Ghana.shp"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(regions.crs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>epsg:32630</code></pre>
+</div>
+</div>
+<p>이를 어떻게 해석하나요?</p>
+<p>좌표 참조 시스템은 유럽 석유 측량 그룹(EPSG) 코드에 의해 참조됩니다.</p>
+<p>이 지리데이터 프레임은 일반적으로 “Mercator” 투영법이라고 더 많이 불리는 EPSG 32630을 사용합니다. 이 투영법은 각도를 보존하고(해상 항해에 유용함) 면적을 약간 왜곡합니다.</p>
+<p>그러나 CSV 파일에서 GeoDataFrame을 만들 때는 CRS를 설정해야 합니다. EPSG 4326은 위도 및 경도 좌표에 해당합니다.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a DataFrame with health facilities in Ghana</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>facilities_df <span class="op">=</span> pd.read_csv(<span class="st">"geopandas_data/ghana/ghana/health_facilities.csv"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the DataFrame to a GeoDataFrame</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>facilities <span class="op">=</span> gpd.GeoDataFrame(facilities_df, geometry<span class="op">=</span>gpd.points_from_xy(facilities_df.Longitude, facilities_df.Latitude))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the coordinate reference system (CRS) to EPSG 4326</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>facilities.crs <span class="op">=</span> {<span class="st">'init'</span>: <span class="st">'epsg:4326'</span>}</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># View the first five rows of the GeoDataFrame</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>facilities.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\heeyoung\.conda\envs\quarto\lib\site-packages\pyproj\crs\crs.py:141: FutureWarning: '+init=&lt;authority&gt;:&lt;code&gt;' syntax is deprecated. '&lt;authority&gt;:&lt;code&gt;' is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  in_crs_string = _prepare_from_proj_string(in_crs_string)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">District</th>
+<th data-quarto-table-cell-role="th">FacilityName</th>
+<th data-quarto-table-cell-role="th">Type</th>
+<th data-quarto-table-cell-role="th">Town</th>
+<th data-quarto-table-cell-role="th">Ownership</th>
+<th data-quarto-table-cell-role="th">Latitude</th>
+<th data-quarto-table-cell-role="th">Longitude</th>
+<th data-quarto-table-cell-role="th">geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Ashanti</td>
+<td>Offinso North</td>
+<td>A.M.E Zion Clinic</td>
+<td>Clinic</td>
+<td>Afrancho</td>
+<td>CHAG</td>
+<td>7.40801</td>
+<td>-1.96317</td>
+<td>POINT (-1.96317 7.40801)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Ashanti</td>
+<td>Bekwai Municipal</td>
+<td>Abenkyiman Clinic</td>
+<td>Clinic</td>
+<td>Anwiankwanta</td>
+<td>Private</td>
+<td>6.46312</td>
+<td>-1.58592</td>
+<td>POINT (-1.58592 6.46312)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Ashanti</td>
+<td>Adansi North</td>
+<td>Aboabo Health Centre</td>
+<td>Health Centre</td>
+<td>Aboabo No 2</td>
+<td>Government</td>
+<td>6.22393</td>
+<td>-1.34982</td>
+<td>POINT (-1.34982 6.22393)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Ashanti</td>
+<td>Afigya-Kwabre</td>
+<td>Aboabogya Health Centre</td>
+<td>Health Centre</td>
+<td>Aboabogya</td>
+<td>Government</td>
+<td>6.84177</td>
+<td>-1.61098</td>
+<td>POINT (-1.61098 6.84177)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Ashanti</td>
+<td>Kwabre</td>
+<td>Aboaso Health Centre</td>
+<td>Health Centre</td>
+<td>Aboaso</td>
+<td>Government</td>
+<td>6.84177</td>
+<td>-1.61098</td>
+<td>POINT (-1.61098 6.84177)</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>위의 코드 셀에서 CSV 파일에서 GeoDataFrame을 만들려면 Pandas와 GeoPandas를 모두 사용해야 했습니다:</p>
+<ul>
+<li>먼저 위도 및 경도 좌표가 포함된 열을 포함하는 데이터 프레임을 만듭니다.</li>
+<li>이를 지오데이터프레임으로 변환하기 위해 gpd.GeoDataFrame()을 사용합니다.</li>
+<li>gpd.points_from_xy() 함수는 위도 및 경도 열에서 포인트 객체를 만듭니다.</li>
+</ul>
+</section>
+<section id="re-projecting" class="level2">
+<h2 class="anchored" data-anchor-id="re-projecting">Re-projecting</h2>
+<p>재투영은 CRS를 변경하는 과정을 말합니다. 이 작업은 GeoPandas에서 to_crs() 메서드를 사용하여 수행됩니다.</p>
+<p>여러 GeoDataFrame을 plotting할 때는 모두 동일한 CRS를 사용하는 것이 중요합니다. 아래 코드 셀에서는 시설 GeoDataFrame의 CRS를 지역의 CRS와 일치하도록 변경한 후 플로팅합니다.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a map</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> regions.plot(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">8</span>), color<span class="op">=</span><span class="st">'whitesmoke'</span>, linestyle<span class="op">=</span><span class="st">':'</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>facilities.to_crs(epsg<span class="op">=</span><span class="dv">32630</span>).plot(markersize<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>&lt;Axes: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="kaggle_gopandas2_files/figure-html/cell-6-output-2.png" width="460" height="647"></p>
+</div>
+</div>
+<p>to_crs() 메서드는 “geometry” 열만 수정하고 다른 모든 열은 그대로 유지합니다.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The "Latitude" and "Longitude" columns are unchanged</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>facilities.to_crs(epsg<span class="op">=</span><span class="dv">32630</span>).head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">District</th>
+<th data-quarto-table-cell-role="th">FacilityName</th>
+<th data-quarto-table-cell-role="th">Type</th>
+<th data-quarto-table-cell-role="th">Town</th>
+<th data-quarto-table-cell-role="th">Ownership</th>
+<th data-quarto-table-cell-role="th">Latitude</th>
+<th data-quarto-table-cell-role="th">Longitude</th>
+<th data-quarto-table-cell-role="th">geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Ashanti</td>
+<td>Offinso North</td>
+<td>A.M.E Zion Clinic</td>
+<td>Clinic</td>
+<td>Afrancho</td>
+<td>CHAG</td>
+<td>7.40801</td>
+<td>-1.96317</td>
+<td>POINT (614422.662 818986.851)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Ashanti</td>
+<td>Bekwai Municipal</td>
+<td>Abenkyiman Clinic</td>
+<td>Clinic</td>
+<td>Anwiankwanta</td>
+<td>Private</td>
+<td>6.46312</td>
+<td>-1.58592</td>
+<td>POINT (656373.863 714616.547)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Ashanti</td>
+<td>Adansi North</td>
+<td>Aboabo Health Centre</td>
+<td>Health Centre</td>
+<td>Aboabo No 2</td>
+<td>Government</td>
+<td>6.22393</td>
+<td>-1.34982</td>
+<td>POINT (682573.395 688243.477)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Ashanti</td>
+<td>Afigya-Kwabre</td>
+<td>Aboabogya Health Centre</td>
+<td>Health Centre</td>
+<td>Aboabogya</td>
+<td>Government</td>
+<td>6.84177</td>
+<td>-1.61098</td>
+<td>POINT (653484.490 756478.812)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Ashanti</td>
+<td>Kwabre</td>
+<td>Aboaso Health Centre</td>
+<td>Health Centre</td>
+<td>Aboaso</td>
+<td>Government</td>
+<td>6.84177</td>
+<td>-1.61098</td>
+<td>POINT (653484.490 756478.812)</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the CRS to EPSG 4326</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>regions.to_crs(<span class="st">"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"</span>).head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Ashanti</td>
+<td>POLYGON ((-1.30985 7.62302, -1.30786 7.62198, ...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Brong Ahafo</td>
+<td>POLYGON ((-2.54567 8.76089, -2.54473 8.76071, ...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Central</td>
+<td>POLYGON ((-2.06723 6.29473, -2.06658 6.29420, ...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Eastern</td>
+<td>POLYGON ((-0.21751 7.21009, -0.21747 7.20993, ...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Greater Accra</td>
+<td>POLYGON ((0.23456 6.10986, 0.23484 6.10974, 0....</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="attributes-of-geometric-objects-기하학적-개체-속성" class="level2">
+<h2 class="anchored" data-anchor-id="attributes-of-geometric-objects-기하학적-개체-속성">Attributes of geometric objects (기하학적 개체 속성)</h2>
+<p>첫 번째 튜토리얼에서 배운 것처럼 임의의 GeoDataFrame의 경우 “geometry” 열의 유형은 표시하려는 대상에 따라 달라집니다:</p>
+<ul>
+<li><p>a Point for the epicenter of an earthquake,</p></li>
+<li><p>a LineString for a street, or</p></li>
+<li><p>a Polygon to show country boundaries.</p></li>
+<li><p>Point : 지진의 진원지를 나타낸다.</p></li>
+<li><p>LineString : 거리</p></li>
+<li><p>Polygon : 국가 경계를 표시할 수 있습니다.</p></li>
+</ul>
+<p>세 가지 유형의 geometric objects(기하학적 개체) 모두 데이터 집합을 빠르게 분석하는 데 사용할 수 있는 기본 속성이 있습니다. 예를 들어, x 및 y 속성에서 각각 점의 x 및 y 좌표를 가져올 수 있습니다.</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the x-coordinate of each point</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>facilities.geometry.head().x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>0   -1.96317
+1   -1.58592
+2   -1.34982
+3   -1.61098
+4   -1.61098
+dtype: float64</code></pre>
+</div>
+</div>
+<p>길이 속성에서 LineString의 길이를 구할 수 있습니다.</p>
+<p>또는 면적 속성에서 Polygon 면적을 구할 수 있습니다.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the area (in square meters) of each polygon in the GeoDataFrame </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>regions.loc[:, <span class="st">"AREA"</span>] <span class="op">=</span> regions.geometry.area <span class="op">/</span> <span class="dv">10</span><span class="op">**</span><span class="dv">6</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Area of Ghana: </span><span class="sc">{}</span><span class="st"> square kilometers"</span>.<span class="bu">format</span>(regions.AREA.<span class="bu">sum</span>()))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CRS:"</span>, regions.crs)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>regions.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area of Ghana: 239584.5760055668 square kilometers
+CRS: epsg:32630</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Region</th>
+<th data-quarto-table-cell-role="th">geometry</th>
+<th data-quarto-table-cell-role="th">AREA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Ashanti</td>
+<td>POLYGON ((686446.075 842986.894, 686666.193 84...</td>
+<td>24379.017777</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Brong Ahafo</td>
+<td>POLYGON ((549970.457 968447.094, 550073.003 96...</td>
+<td>40098.168231</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Central</td>
+<td>POLYGON ((603176.584 695877.238, 603248.424 69...</td>
+<td>9665.626760</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Eastern</td>
+<td>POLYGON ((807307.254 797910.553, 807311.908 79...</td>
+<td>18987.625847</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Greater Accra</td>
+<td>POLYGON ((858081.638 676424.913, 858113.115 67...</td>
+<td>3706.511145</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>위의 코드 셀에서 GeoDataFrame 지역의 CRS가 a “Mercator” projection(“메르카토르” 투영법)인 EPSG 32630으로 설정되어 있기 때문에 면적 계산이 “아프리카 알버스 등면적 원뿔” 같은 등면적 투영법을 사용한 경우보다 약간 덜 정확합니다.</p>
+<p>하지만 이렇게 하면 가나의 면적은 약 239585제곱킬로미터로 계산되어 정답과 크게 다르지 않습니다.</p>
+</section>
+<section id="your-turn" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn">Your turn</h2>
+<p>배운 내용을 활용하여 남미로의 조류 이동을 추적하세요.</p>
+<hr>
+</section>
+<section id="exercise" class="level1">
+<h1>Exercise</h1>
+<section id="instroduction" class="level3">
+<h3 class="anchored" data-anchor-id="instroduction">instroduction</h3>
+<p>당신은 조류 보호 전문가이며 보라색 담비의 이동 패턴을 이해하고자 합니다.</p>
+<p>연구를 통해 이 새가 일반적으로 미국 동부에서 여름 번식기를 보낸 후 겨울을 위해 남미로 이동한다는 사실을 알게 되었습니다.</p>
+<p>하지만 이 새는 멸종 위기에 처해 있으므로 이 새가 방문할 가능성이 높은 위치를 자세히 살펴보고 싶다고 합니다.</p>
+<p>남아메리카에는 여러 보호 지역이 있으며, 이 지역으로 이동하거나 서식하는 생물종이 번성할 수 있는 최상의 환경을 보장하기 위해 특별한 규제로 운영되고 있습니다.</p>
+<p>여러분은 보라색 담비가 이러한 지역을 자주 찾는지 알고 싶을 것입니다.</p>
+<p>이 질문에 답하기 위해 최근에 수집한 11가지 새의 연중 위치를 추적하는 데이터를 사용합니다.</p>
+<p>시작하기 전에 아래 코드 셀을 실행하여 모든 것을 설정하세요.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> LineString</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-the-data." class="level3">
+<h3 class="anchored" data-anchor-id="load-the-data.">1) Load the data.</h3>
+<p>다음 코드 셀을 (변경하지 않고) 실행하여 GPS 데이터를 판다 데이터 프레임 birds_df에 로드합니다.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>birds_df <span class="op">=</span> pd.read_csv(<span class="st">"./geopandas_data/purple_martin.csv"</span>, parse_dates<span class="op">=</span>[<span class="st">'timestamp'</span>])</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"There are </span><span class="sc">{}</span><span class="st"> different birds in the dataset."</span>.<span class="bu">format</span>(birds_df[<span class="st">"tag-local-identifier"</span>].nunique()))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>birds_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>There are 11 different birds in the dataset.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">timestamp</th>
+<th data-quarto-table-cell-role="th">location-long</th>
+<th data-quarto-table-cell-role="th">location-lat</th>
+<th data-quarto-table-cell-role="th">tag-local-identifier</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2014-08-15 05:56:00</td>
+<td>-88.146014</td>
+<td>17.513049</td>
+<td>30448</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2014-09-01 05:59:00</td>
+<td>-85.243501</td>
+<td>13.095782</td>
+<td>30448</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>2014-10-30 23:58:00</td>
+<td>-62.906089</td>
+<td>-7.852436</td>
+<td>30448</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>2014-11-15 04:59:00</td>
+<td>-61.776826</td>
+<td>-11.723898</td>
+<td>30448</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>2014-11-30 09:59:00</td>
+<td>-61.241538</td>
+<td>-11.612237</td>
+<td>30448</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>데이터 세트에는 11마리의 새가 있으며, 각 새는 ‘태그-지역-식별자’ 열의 고유 값으로 식별됩니다. 각 새는 일 년 중 서로 다른 시기에 수집된 여러 측정값을 가지고 있습니다.</p>
+<p>다음 코드 셀을 사용하여 GeoDataFrame birds를 만듭니다.</p>
+<p>birds에는 birds_df의 모든 열과 (경도, 위도) 위치가 있는 포인트 개체가 포함된 “기하학” 열이 있어야 합니다.</p>
+<p>birds의 CRS를 {‘init’: ‘epsg:4326’}로 설정합니다.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here: Create the GeoDataFrame</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>birds <span class="op">=</span> gpd.GeoDataFrame(birds_df, geometry<span class="op">=</span>gpd.points_from_xy(birds_df[<span class="st">"location-long"</span>], birds_df[<span class="st">"location-lat"</span>]))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here: Set the CRS to {'init': 'epsg:4326'}</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>birds.crs <span class="op">=</span> {<span class="st">'init'</span> :<span class="st">'epsg:4326'</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\heeyoung\.conda\envs\quarto\lib\site-packages\pyproj\crs\crs.py:141: FutureWarning: '+init=&lt;authority&gt;:&lt;code&gt;' syntax is deprecated. '&lt;authority&gt;:&lt;code&gt;' is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  in_crs_string = _prepare_from_proj_string(in_crs_string)</code></pre>
+</div>
+</div>
+</section>
+<section id="plot-the-data." class="level3">
+<h3 class="anchored" data-anchor-id="plot-the-data.">2) Plot the data.</h3>
+<p>다음으로, GeoPandas에서 ‘naturalearth_lowres’ 데이터 집합을 로드하고, 아메리카 대륙의 모든 국가(북미와 남미 모두)의 경계를 포함하는 GeoDataFrame에 americas를 설정합니다.</p>
+<p>다음 코드 셀을 변경하지 않고 실행합니다.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a GeoDataFrame with country boundaries in North/South America, print the first 5 rows</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>world <span class="op">=</span> gpd.read_file(gpd.datasets.get_path(<span class="st">'naturalearth_lowres'</span>))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>americas <span class="op">=</span> world.loc[world[<span class="st">'continent'</span>].isin([<span class="st">'North America'</span>, <span class="st">'South America'</span>])]</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>americas.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">pop_est</th>
+<th data-quarto-table-cell-role="th">continent</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">iso_a3</th>
+<th data-quarto-table-cell-role="th">gdp_md_est</th>
+<th data-quarto-table-cell-role="th">geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>37589262.0</td>
+<td>North America</td>
+<td>Canada</td>
+<td>CAN</td>
+<td>1736425</td>
+<td>MULTIPOLYGON (((-122.84000 49.00000, -122.9742...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>328239523.0</td>
+<td>North America</td>
+<td>United States of America</td>
+<td>USA</td>
+<td>21433226</td>
+<td>MULTIPOLYGON (((-122.84000 49.00000, -120.0000...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">9</td>
+<td>44938712.0</td>
+<td>South America</td>
+<td>Argentina</td>
+<td>ARG</td>
+<td>445445</td>
+<td>MULTIPOLYGON (((-68.63401 -52.63637, -68.25000...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">10</td>
+<td>18952038.0</td>
+<td>South America</td>
+<td>Chile</td>
+<td>CHL</td>
+<td>282318</td>
+<td>MULTIPOLYGON (((-68.63401 -52.63637, -68.63335...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>11263077.0</td>
+<td>North America</td>
+<td>Haiti</td>
+<td>HTI</td>
+<td>14332</td>
+<td>POLYGON ((-71.71236 19.71446, -71.62487 19.169...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>다음 코드 셀을 사용하여 (1) 미국의 국가 경계 GeoDataFrame과 (2) birds_gdf GeoDataFrame의 모든 점을 모두 표시하는 단일 플롯을 만듭니다.</p>
+<p>여기서 특별한 스타일링에 대해 걱정할 필요 없이, 모든 데이터가 제대로 로드되었는지 간단히 확인하기 위해 예비 플롯을 만들면 됩니다.</p>
+<p>특히, 새를 구분하기 위해 점을 색상으로 구분할 필요가 없으며, 시작점과 끝점을 구분할 필요도 없습니다. 이 작업은 연습의 다음 부분에서 하도록 하겠습니다.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> americas.plot(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">10</span>), color<span class="op">=</span><span class="st">'white'</span>, linestyle<span class="op">=</span><span class="st">':'</span>, edgecolor<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>birds.plot(ax<span class="op">=</span>ax, markersize<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>&lt;Axes: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="kaggle_gopandas2_files/figure-html/cell-15-output-2.png" width="801" height="713"></p>
+</div>
+</div>
+</section>
+<section id="where-does-each-bird-start-and-end-its-journey-part-1" class="level3">
+<h3 class="anchored" data-anchor-id="where-does-each-bird-start-and-end-its-journey-part-1">3) Where does each bird start and end its journey? (Part 1)</h3>
+<p>이제 각 새의 경로를 더 자세히 살펴볼 준비가 되었습니다. 다음 코드 셀을 실행하여 두 개의 GeoDataFrame을 만듭니다:</p>
+<ul>
+<li>경로_gdf에는 각 새의 경로를 표시하는 LineString 객체가 포함되어 있습니다. 이 코드 셀은 LineString() 메서드를 사용하여 Point 개체 목록에서 LineString 개체를 만듭니다.</li>
+<li>start_gdf에는 각 새의 시작 지점이 포함되어 있습니다.</li>
+</ul>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GeoDataFrame showing path for each bird</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>path_df <span class="op">=</span> birds.groupby(<span class="st">"tag-local-identifier"</span>)[<span class="st">'geometry'</span>].<span class="bu">apply</span>(<span class="bu">list</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: LineString(x)).reset_index()</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>path_gdf <span class="op">=</span> gpd.GeoDataFrame(path_df, geometry<span class="op">=</span>path_df.geometry)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>path_gdf.crs <span class="op">=</span> {<span class="st">'init'</span> :<span class="st">'epsg:4326'</span>}</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># GeoDataFrame showing starting point for each bird</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>start_df <span class="op">=</span> birds.groupby(<span class="st">"tag-local-identifier"</span>)[<span class="st">'geometry'</span>].<span class="bu">apply</span>(<span class="bu">list</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x[<span class="dv">0</span>]).reset_index()</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>start_gdf <span class="op">=</span> gpd.GeoDataFrame(start_df, geometry<span class="op">=</span>start_df.geometry)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>start_gdf.crs <span class="op">=</span> {<span class="st">'init'</span> :<span class="st">'epsg:4326'</span>}</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Show first five rows of GeoDataFrame</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>start_gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\heeyoung\.conda\envs\quarto\lib\site-packages\pyproj\crs\crs.py:141: FutureWarning: '+init=&lt;authority&gt;:&lt;code&gt;' syntax is deprecated. '&lt;authority&gt;:&lt;code&gt;' is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  in_crs_string = _prepare_from_proj_string(in_crs_string)
+C:\Users\heeyoung\.conda\envs\quarto\lib\site-packages\pyproj\crs\crs.py:141: FutureWarning: '+init=&lt;authority&gt;:&lt;code&gt;' syntax is deprecated. '&lt;authority&gt;:&lt;code&gt;' is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  in_crs_string = _prepare_from_proj_string(in_crs_string)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">tag-local-identifier</th>
+<th data-quarto-table-cell-role="th">geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>30048</td>
+<td>POINT (-90.12992 20.73242)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>30054</td>
+<td>POINT (-93.60861 46.50563)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>30198</td>
+<td>POINT (-80.31036 25.92545)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>30263</td>
+<td>POINT (-76.78146 42.99209)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>30275</td>
+<td>POINT (-76.78213 42.99207)</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>다음 코드 셀을 사용하여 각 새의 최종 위치가 포함된 GeoDataFrame end_gdf를 만듭니다.</p>
+<ul>
+<li>형식은 start_gdf와 동일해야 하며, 두 개의 열(“태그-지역-식별자” 및 “기하형상”)이 있고, “기하형상” 열에는 포인트 개체가 포함되어 있어야 합니다.</li>
+<li>end_gdf의 CRS를 {‘init’: ‘epsg:4326’}으로 설정합니다.</li>
+</ul>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>end_df <span class="op">=</span> birds.groupby(<span class="st">"tag-local-identifier"</span>)[<span class="st">'geometry'</span>].<span class="bu">apply</span>(<span class="bu">list</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x[<span class="op">-</span><span class="dv">1</span>]).reset_index()</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>end_gdf <span class="op">=</span> gpd.GeoDataFrame(end_df, geometry<span class="op">=</span>end_df.geometry)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>end_gdf.crs <span class="op">=</span> {<span class="st">'init'</span>: <span class="st">'epsg:4326'</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\heeyoung\.conda\envs\quarto\lib\site-packages\pyproj\crs\crs.py:141: FutureWarning: '+init=&lt;authority&gt;:&lt;code&gt;' syntax is deprecated. '&lt;authority&gt;:&lt;code&gt;' is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  in_crs_string = _prepare_from_proj_string(in_crs_string)</code></pre>
+</div>
+</div>
+</section>
+<section id="where-does-each-bird-start-and-end-its-journey-part-2" class="level3">
+<h3 class="anchored" data-anchor-id="where-does-each-bird-start-and-end-its-journey-part-2">4) Where does each bird start and end its journey? (Part 2)</h3>
+<p>위 질문의 GeoDataFrames (path_gdf, start_gdf, and end_gdf)을 사용하여 모든 새의 경로를 단일 맵에 시각화합니다.</p>
+<p>아메리카 GeoDataFrame을 사용할 수도 있습니다.</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> americas.plot(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>), color<span class="op">=</span><span class="st">'white'</span>, linestyle<span class="op">=</span><span class="st">':'</span>, edgecolor<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>start_gdf.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'red'</span>,  markersize<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>path_gdf.plot(ax<span class="op">=</span>ax, cmap<span class="op">=</span><span class="st">'tab20b'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, linewidth<span class="op">=</span><span class="dv">1</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>end_gdf.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">'black'</span>, markersize<span class="op">=</span><span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>&lt;Axes: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="kaggle_gopandas2_files/figure-html/cell-18-output-2.png" width="801" height="700"></p>
+</div>
+</div>
+</section>
+<section id="where-are-the-protected-areas-in-south-america-part-1" class="level3">
+<h3 class="anchored" data-anchor-id="where-are-the-protected-areas-in-south-america-part-1">5) Where are the protected areas in South America? (Part 1)</h3>
+<p>모든 새들이 남미 어딘가로 가는 것 같습니다. 하지만 새들이 보호 지역으로 갈까요?</p>
+<p>다음 코드 셀에서는 남아메리카에 있는 모든 보호 지역의 위치를 포함하는 GeoDataFrame protected_areas를 만듭니다. 해당 셰이프 파일은 파일 경로 protected_filepath에 있습니다.</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Path of the shapefile to load</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>protected_filepath <span class="op">=</span> <span class="st">"./geopandas_data/SAPA_Aug2019-shapefile/SAPA_Aug2019-shapefile/SAPA_Aug2019-shapefile-polygons.shp"</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>protected_areas <span class="op">=</span> gpd.read_file(protected_filepath)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
